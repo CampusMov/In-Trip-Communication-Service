@@ -53,5 +53,13 @@ public interface ChatController {
     @ApiResponse(responseCode = "404", description = "Chat not found")
     ResponseEntity<Void> closeChat(@PathVariable String chatId);
 
+    @GetMapping("/{chatId}/unread-count")
+    @Operation(
+            summary = "Get unread message count",
+            description = "Retrieves the count of unread messages for the specified chat and user"
+    )
+    @ApiResponse(responseCode = "200", description = "Unread message count successfully retrieved")
+    @ApiResponse(responseCode = "404", description = "Chat not found")
+    ResponseEntity<Integer> getUnreadCount(@PathVariable String chatId, @RequestParam String userId);
 }
 

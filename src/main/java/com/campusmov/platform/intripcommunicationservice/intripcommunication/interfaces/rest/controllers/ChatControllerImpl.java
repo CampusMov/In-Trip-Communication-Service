@@ -57,5 +57,12 @@ public class ChatControllerImpl implements ChatController {
         chatCommandService.handle(new CloseChatCommand(chatId));
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<Integer> getUnreadCount(String chatId, String userId) {
+        var query = new GetUnreadCountQuery(chatId, userId);
+        int unreadCount = chatQueryService.handle(query);
+        return new ResponseEntity<>(unreadCount, HttpStatus.OK);
+    }
 }
 
