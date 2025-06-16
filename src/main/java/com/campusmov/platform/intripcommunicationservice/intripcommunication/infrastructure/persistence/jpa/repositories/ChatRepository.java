@@ -3,6 +3,7 @@ package com.campusmov.platform.intripcommunicationservice.intripcommunication.in
 import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.model.aggregates.Chat;
 import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.model.valueobjects.CarpoolId;
 import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.model.valueobjects.ChatId;
+import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.model.valueobjects.ChatStatus;
 import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.model.valueobjects.UserId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

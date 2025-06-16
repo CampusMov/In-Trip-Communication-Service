@@ -7,11 +7,22 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
+
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequestMapping(value = "/chats/{chatId}/messages", produces = APPLICATION_JSON_VALUE)
 @Tag(name = "Chat Messages", description = "Endpoints for sending and retrieving in-trip messages")
 public interface ChatMessageController {
+
+    @GetMapping
+    @Operation(
+            summary = "List all messages",
+            description = "Retrieves all messages for the specified open chat"
+    )
+    @ApiResponse(responseCode = "200", description = "Messages returned")
+    ResponseEntity<Collection<MessageResource>> getMessages(@PathVariable String chatId);
+
     @PostMapping
     @Operation(
             summary = "Send a message",

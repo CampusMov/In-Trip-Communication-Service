@@ -35,9 +35,34 @@ public class ChatControllerImpl implements ChatController {
     }
 
     @Override
+    public ResponseEntity<ChatResource> getChatForPassenger(String passengerId, String carpoolId) {
+        var query = GetChatForPassengerQueryFromResourceAssembler.toQuery(passengerId, carpoolId);
+        var chatOptional = chatQueryService.handle(query);
+        return chatOptional
+                .map(chat -> new ResponseEntity<>(ChatResourceFromEntityAssembler.toResource(chat), HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @Override
+    public ResponseEntity<Collection<ChatResource>> getChatsByDriver(String driverId) {
+        var query = GetChatsByDriverQueryFromResourceAssembler.toQuery(driverId);
+        var list = chatQueryService.handle(query).stream()
+                .map(ChatResourceFromEntityAssembler::toResource)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    @Override
     public ResponseEntity<Void> closeChat(String chatId) {
         chatCommandService.handle(new CloseChatCommand(chatId));
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Integer> getUnreadCount(String chatId, String userId) {
+        var query = new GetUnreadCountQuery(chatId, userId);
+        int unreadCount = chatQueryService.handle(query);
+        return new ResponseEntity<>(unreadCount, HttpStatus.OK);
     }
 }
 
