@@ -24,6 +24,18 @@ public interface ChatController {
     @ApiResponse(responseCode = "400", description = "A chat already exists for that passenger and ride")
     ResponseEntity<ChatResource> createChat(@RequestBody CreateChatResource resource);
 
+    @GetMapping("/passenger/{passengerId}/ride/{carpoolId}")
+    @Operation(
+            summary = "Get passenger’s chat",
+            description = "Retrieves the open chat for the specified passenger and ride"
+    )
+    @ApiResponse(responseCode = "200", description = "Chat found and returned")
+    @ApiResponse(responseCode = "404", description = "No open chat found for that passenger and ride")
+    ResponseEntity<ChatResource> getChatForPassenger(
+            @PathVariable String passengerId,
+            @PathVariable String carpoolId
+    );
+
     @PostMapping("/{chatId}/close")
     @Operation(
             summary = "Close a chat",
