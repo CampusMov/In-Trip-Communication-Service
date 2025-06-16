@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
+
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequestMapping(value = "/chats", produces = APPLICATION_JSON_VALUE)
@@ -22,5 +24,13 @@ public interface ChatController {
     @ApiResponse(responseCode = "400", description = "A chat already exists for that passenger and ride")
     ResponseEntity<ChatResource> createChat(@RequestBody CreateChatResource resource);
 
+    @PostMapping("/{chatId}/close")
+    @Operation(
+            summary = "Close a chat",
+            description = "Marks the specified chat as CLOSED"
+    )
+    @ApiResponse(responseCode = "200", description = "Chat successfully closed")
+    @ApiResponse(responseCode = "404", description = "Chat not found")
+    ResponseEntity<Void> closeChat(@PathVariable String chatId);
 }
 
