@@ -68,4 +68,24 @@ public class Chat extends AbstractAggregateRoot<Chat> {
     public static Chat from(CreateChatCommand cmd) {
         return new Chat(cmd);
     }
+
+    public Message sendMessage(SendMessageCommand cmd) {
+        var msg = new Message(cmd);
+        this.messages.add(msg);
+        this.lastMessageAt = cmd.sentAt();
+        this.lastMessagePreview = cmd.content().substring(0, Math.min(30, cmd.content().length()));
+        this.unreadCount += 1;
+        //TODO: registerEvent(new MessageSent(this.id, msg.getId()));
+        return msg;
+    }
+
+    public void markMessageRead(MarkMessageReadCommand cmd) {
+        this.messages.stream()
+                .filter(m -> m.getId().value().equals(cmd.messageId()))
+                .findFirst()
+                .ifPresent(m -> {
+                    m.markAsRead(cmd);
+                    this.unreadCount = Math.max(0, this.unreadCount - 1);
+                });
+    }
 }

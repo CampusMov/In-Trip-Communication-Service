@@ -38,5 +38,21 @@ public class Message {
     private List<ReadReceipt> readReceipts = new ArrayList<>();
 
     protected Message() { /* JPA */ }
+
+    public Message(SendMessageCommand cmd) {
+        this.id = new MessageId(UUID.randomUUID().toString());
+        this.senderId = new UserId(cmd.senderId());
+        this.content = cmd.content();
+        this.sentAt = cmd.sentAt();
+        this.status = MessageStatus.SENT;
+    }
+
+    public void markAsRead(MarkMessageReadCommand cmd) {
+        if (!this.status.equals(MessageStatus.READ)) {
+            var receipt = new ReadReceipt(cmd);
+            this.readReceipts.add(receipt);
+            this.status = MessageStatus.READ;
+        }
+    }
 }
 
