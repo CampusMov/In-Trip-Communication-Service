@@ -1,6 +1,7 @@
 package com.campusmov.platform.intripcommunicationservice.intripcommunication.application.internal.queryservices;
 
 import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.model.aggregates.Chat;
+import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.model.entities.Message;
 import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.model.queries.*;
 import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.model.valueobjects.*;
 import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.services.ChatQueryService;
@@ -31,5 +32,29 @@ public class ChatQueryServiceImpl implements ChatQueryService {
         var driverId = new UserId(query.driverId());
         return chatRepository
                 .findAllByDriverIdAndStatus(driverId, ChatStatus.OPEN);
+    }
+
+    @Override
+    public Collection<Message> handle(GetMessagesByChatIdQuery query) {
+        var chatOpt = chatRepository
+                .findById(new ChatId(query.chatId()))
+                .filter(chat -> chat.getStatus() == ChatStatus.OPEN);
+
+        var chat = chatOpt.orElseThrow(() ->
+                new IllegalArgumentException("Open chat with ID " + query.chatId() + " not found")
+        );
+        return chat.getMessages();
+    }
+
+    @Override
+    public int handle(GetUnreadCountQuery query) {
+        var chatOpt = chatRepository
+                .findById(new ChatId(query.chatId()))
+                .filter(chat -> chat.getStatus() == ChatStatus.OPEN);
+
+        var chat = chatOpt.orElseThrow(() ->
+                new IllegalArgumentException("Open chat with ID " + query.chatId() + " not found")
+        );
+        return chat.getUnreadCount();
     }
 }
