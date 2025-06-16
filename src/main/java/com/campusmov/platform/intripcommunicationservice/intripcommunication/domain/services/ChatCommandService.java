@@ -10,5 +10,6 @@ public interface ChatCommandService {
     Optional<Chat> handle(CreateChatCommand command);
     Optional<Message> handle(SendMessageCommand command);
     void handle(String chatId, MarkMessageReadCommand command);
+    void handle(CloseChatCommand command);
 }
 

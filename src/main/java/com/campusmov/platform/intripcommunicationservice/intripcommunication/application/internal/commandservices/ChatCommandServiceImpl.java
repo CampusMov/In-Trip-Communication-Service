@@ -52,5 +52,14 @@ public class ChatCommandServiceImpl implements ChatCommandService {
         chatRepository.save(chat);
     }
 
+    @Override
+    public void handle(CloseChatCommand cmd) {
+        var chatId = new ChatId(cmd.chatId());
+        var chat = chatRepository.findById(chatId)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Chat with ID " + cmd.chatId() + " not found"));
+        chat.closeChat(cmd);
+        chatRepository.save(chat);
+    }
 }
 

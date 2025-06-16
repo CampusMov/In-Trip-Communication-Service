@@ -88,4 +88,11 @@ public class Chat extends AbstractAggregateRoot<Chat> {
                     this.unreadCount = Math.max(0, this.unreadCount - 1);
                 });
     }
+
+    public void closeChat(CloseChatCommand cmd) {
+        if (this.id.value().equals(cmd.chatId())) {
+            this.status = ChatStatus.CLOSED;
+            //TODO: registerEvent(new ChatClosed(this.id));
+        }
+    }
 }
