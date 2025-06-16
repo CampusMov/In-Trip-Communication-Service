@@ -8,5 +8,7 @@ import java.util.Optional;
 
 public interface ChatCommandService {
     Optional<Chat> handle(CreateChatCommand command);
+    Optional<Message> handle(SendMessageCommand command);
+    void handle(String chatId, MarkMessageReadCommand command);
 }
 

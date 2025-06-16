@@ -1,6 +1,7 @@
 package com.campusmov.platform.intripcommunicationservice.intripcommunication.application.internal.commandservices;
 
 import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.model.aggregates.Chat;
+import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.model.entities.Message;
 import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.model.commands.*;
 import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.model.valueobjects.*;
 import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.services.ChatCommandService;
@@ -26,5 +27,30 @@ public class ChatCommandServiceImpl implements ChatCommandService {
         var chat = Chat.from(cmd);
         return Optional.of(chatRepository.save(chat));
     }
+
+    @Override
+    public Optional<Message> handle(SendMessageCommand cmd) {
+        var chatId = new ChatId(cmd.chatId());
+        var chat = chatRepository.findById(chatId)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Chat with ID " + cmd.chatId() + " not found"));
+        if (chat.getStatus() != ChatStatus.OPEN) {
+            throw new IllegalStateException("Cannot send message to a closed chat");
+        }
+        var message = chat.sendMessage(cmd);
+        chatRepository.save(chat);
+        return Optional.of(message);
+    }
+
+    @Override
+    public void handle(String chatId,MarkMessageReadCommand cmd) {
+        var chatIdObj = new ChatId(chatId);
+        var chat = chatRepository.findById(chatIdObj)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Chat for message " + cmd.messageId() + " not found"));
+        chat.markMessageRead(cmd);
+        chatRepository.save(chat);
+    }
+
 }
 
