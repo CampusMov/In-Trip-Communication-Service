@@ -1,6 +1,7 @@
 package com.campusmov.platform.intripcommunicationservice.intripcommunication.interfaces.rest.controllers;
 
 import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.model.commands.*;
+import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.model.queries.GetUnreadCountQuery;
 import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.services.ChatCommandService;
 import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.services.ChatQueryService;
 import com.campusmov.platform.intripcommunicationservice.intripcommunication.interfaces.rest.dto.ChatResource;
@@ -11,6 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,6 +41,15 @@ public class ChatControllerImpl implements ChatController {
         return chatOptional
                 .map(chat -> new ResponseEntity<>(ChatResourceFromEntityAssembler.toResource(chat), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @Override
+    public ResponseEntity<Collection<ChatResource>> getChatsByDriver(String driverId) {
+        var query = GetChatsByDriverQueryFromResourceAssembler.toQuery(driverId);
+        var list = chatQueryService.handle(query).stream()
+                .map(ChatResourceFromEntityAssembler::toResource)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @Override

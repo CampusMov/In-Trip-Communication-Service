@@ -36,6 +36,14 @@ public interface ChatController {
             @PathVariable String carpoolId
     );
 
+    @GetMapping("/driver/{driverId}")
+    @Operation(
+            summary = "List driver’s chats",
+            description = "Lists all open chats for the specified driver"
+    )
+    @ApiResponse(responseCode = "200", description = "List of open chats for driver returned")
+    ResponseEntity<Collection<ChatResource>> getChatsByDriver(@PathVariable String driverId);
+
     @PostMapping("/{chatId}/close")
     @Operation(
             summary = "Close a chat",
@@ -44,5 +52,6 @@ public interface ChatController {
     @ApiResponse(responseCode = "200", description = "Chat successfully closed")
     @ApiResponse(responseCode = "404", description = "Chat not found")
     ResponseEntity<Void> closeChat(@PathVariable String chatId);
+
 }
 
