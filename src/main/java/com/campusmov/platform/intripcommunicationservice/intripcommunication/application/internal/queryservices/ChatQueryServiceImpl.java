@@ -8,6 +8,7 @@ import com.campusmov.platform.intripcommunicationservice.intripcommunication.inf
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -23,5 +24,12 @@ public class ChatQueryServiceImpl implements ChatQueryService {
         return chatRepository
                 .findByCarpoolIdAndPassengerId(carpoolId, passengerId)
                 .filter(chat -> chat.getStatus() == ChatStatus.OPEN);
+    }
+
+    @Override
+    public Collection<Chat> handle(GetChatsByDriverIdQuery query) {
+        var driverId = new UserId(query.driverId());
+        return chatRepository
+                .findAllByDriverIdAndStatus(driverId, ChatStatus.OPEN);
     }
 }
