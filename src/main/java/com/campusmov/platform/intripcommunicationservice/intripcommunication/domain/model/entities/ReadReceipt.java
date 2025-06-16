@@ -29,4 +29,10 @@ public class ReadReceipt {
     private LocalDateTime readAt;
 
     protected ReadReceipt() { /* JPA */ }
+
+    public ReadReceipt(MarkMessageReadCommand cmd) {
+        this.messageId = new MessageId(cmd.messageId());
+        this.readerId = new UserId(cmd.readerId());
+        this.readAt = cmd.readAt();
+    }
 }
