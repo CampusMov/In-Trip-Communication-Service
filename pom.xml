@@ -9,8 +9,8 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.campusmov.platform</groupId>
-    <artifactId>InTripCommunicationService</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <artifactId>in-trip-communication-service</artifactId>
+    <version>1.0.0</version>
     <name>InTripCommunicationService</name>
     <description>InTripCommunicationService</description>
     <url/>
