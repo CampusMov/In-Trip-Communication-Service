@@ -1,5 +1,8 @@
 package com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.model.commands;
 
+import lombok.Builder;
+
+@Builder
 public record CreateChatCommand(
         String carpoolId,
         String driverId,
