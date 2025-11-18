@@ -1,23 +1,29 @@
 package com.campusmov.platform.intripcommunicationservice.intripcommunication.application.internal.commandservices;
 
 import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.model.aggregates.Chat;
-import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.model.commands.*;
+import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.model.commands.CloseChatCommand;
+import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.model.commands.CreateChatCommand;
+import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.model.commands.MarkMessageReadCommand;
+import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.model.commands.SendMessageCommand;
 import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.model.entities.Message;
-import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.model.valueobjects.*;
+import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.model.valueobjects.CarpoolId;
+import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.model.valueobjects.ChatId;
+import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.model.valueobjects.ChatStatus;
+import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.model.valueobjects.UserId;
 import com.campusmov.platform.intripcommunicationservice.intripcommunication.domain.services.ChatCommandService;
 import com.campusmov.platform.intripcommunicationservice.intripcommunication.infrastructure.persistence.jpa.repositories.ChatRepository;
-import com.campusmov.platform.intripcommunicationservice.intripcommunication.interfaces.websocket.publisher.ChatWebSocketPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class ChatCommandServiceImpl implements ChatCommandService {
 
     private final ChatRepository chatRepository;
-    private final ChatWebSocketPublisher wsPublisher;
 
     @Override
     public Optional<Chat> handle(CreateChatCommand cmd) {
@@ -43,8 +49,6 @@ public class ChatCommandServiceImpl implements ChatCommandService {
 
         var message = chat.sendMessage(cmd);
         chatRepository.save(chat);
-
-        wsPublisher.publishNewMessage(cmd.chatId(), message);
 
         return Optional.of(message);
     }

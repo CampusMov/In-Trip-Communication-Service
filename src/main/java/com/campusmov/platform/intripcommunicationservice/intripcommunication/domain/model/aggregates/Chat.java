@@ -18,6 +18,17 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * Aggregate root representing an in-trip chat session between a passenger and a driver.
+ * <p>
+ * A {@code Chat} models the communication channel within an ongoing Carpool, allowing users
+ * to exchange messages, update read status, and close the session. It follows Domain-Driven
+ * Design (DDD) principles and extends {@link AbstractAggregateRoot} to support domain events.
+ * <p>
+ * The chat contains metadata such as timestamps, unread message counters, last message preview,
+ * and the current chat status (OPEN or CLOSED).
+ */
 @Entity
 @Getter
 @Setter
@@ -52,6 +63,9 @@ public class Chat extends AbstractAggregateRoot<Chat> {
     @JoinColumn(name = "chat_id")
     private List<Message> messages = new ArrayList<>();
 
+    /**
+     * Protected constructor for JPA.
+     */
     protected Chat() { /* JPA */ }
 
     private Chat(CreateChatCommand cmd) {
@@ -79,6 +93,11 @@ public class Chat extends AbstractAggregateRoot<Chat> {
         return msg;
     }
 
+    /**
+     * Marks a specific message as read and updates the unread counter.
+     *
+     * @param cmd command containing message ID to mark as read
+     * */
     public void markMessageRead(MarkMessageReadCommand cmd) {
         this.messages.stream()
                 .filter(m -> m.getId().value().equals(cmd.messageId()))

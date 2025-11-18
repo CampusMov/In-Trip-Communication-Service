@@ -5,8 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SendPayload {
+public class ChatMessagePayload {
     private String senderId;
     private String content;
-    private String sentAt;
 }
